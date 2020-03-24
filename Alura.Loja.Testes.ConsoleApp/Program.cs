@@ -13,7 +13,7 @@ namespace Alura.Loja.Testes.ConsoleApp
             
             GravarUsandoEntity();
             //RecuperarProdutos();
-            ExcluirProdutos();
+            //ExcluirProdutos();
         }
 
 

@@ -28,7 +28,7 @@ namespace Alura.Loja.Testes.ConsoleApp
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            contexto.Dispose();
         }
 
         public IList<Produto> Produtos()
