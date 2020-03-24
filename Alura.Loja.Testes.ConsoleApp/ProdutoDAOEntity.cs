@@ -8,6 +8,12 @@ namespace Alura.Loja.Testes.ConsoleApp
     {
         private LojaContext contexto;
 
+        public ProdutoDAOEntity()
+        {
+            this.contexto = new LojaContext();
+        }
+
+
         public void Adicionar(Produto p)
         {
             contexto.Produtos.Add(p);
