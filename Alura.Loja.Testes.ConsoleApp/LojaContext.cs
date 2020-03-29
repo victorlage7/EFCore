@@ -7,6 +7,8 @@ namespace Alura.Loja.Testes.ConsoleApp
     {
         public DbSet<Produto> Produtos { get; set; }
 
+        public DbSet<Compra> Compras { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Server=DESKTOP-R2J37NJ\\MSSQLSERVER02;Database=LojaDB;Trusted_Connection=true;");
