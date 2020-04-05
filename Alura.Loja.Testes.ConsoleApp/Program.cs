@@ -26,10 +26,17 @@ namespace Alura.Loja.Testes.ConsoleApp
             using (var contexto = new LojaContext())
             {
 
-                contexto.Promocoes.Add(promocaoDePascoa);
+                var promocao = contexto.Promocoes.Find(1);
+                Console.WriteLine(contexto.Promocoes.ToList());
+                contexto.Promocoes.Remove(promocao);
+
+                
+
+                //contexto.Promocoes.Add(promocaoDePascoa);
                 contexto.SaveChanges();
             }
 
+            Console.ReadKey();
 
         }
 
