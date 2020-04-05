@@ -10,7 +10,7 @@ namespace Alura.Loja.Testes.ConsoleApp
     {
         public int ProdutoId { get; set; }
         public int PromocaoId { get; set; }
-        public Produto produto { get; set; }
+        public Produto Produto { get; set; }
         public Promocao Promocao { get; set; }
     }
 }
