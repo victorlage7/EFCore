@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,29 +11,63 @@ namespace Alura.Loja.Testes.ConsoleApp
     {
         static void Main(string[] args)
         {
+            incluirPromocao();
 
-            var fulano = new Cliente();
-            fulano.Nome = "Fulaninho de Tal";
-            fulano.EnderecoDeEntrega = new Endereco()            {
-                Numero = 12,
-                Logradouro = "Rua dos Inválidos",
-                Complemento = "sobrado",
-                Bairro = "Centro",
-                Cidade = "Cidade"
-            };
-
-
-            using (var contexto = new LojaContext())
+            using (var contexto2 = new LojaContext())
             {
-                contexto.Clientes.Add(fulano);
-                contexto.SaveChanges();
+                var promocao = contexto2
+               .Promocoes
+               .Include(p => p.Produtos)
+               .ThenInclude(pp => pp.Produto)
+               .FirstOrDefault();
+
+                Console.WriteLine("\nMotrando os produtos da promoção...");
+                foreach (var item in promocao.Produtos)
+                {
+                    Console.WriteLine(item.Produto);
+                }
             }
 
             Console.ReadKey();
 
         }
 
-        private static void muitosparamuitos() {
+        private static void incluirPromocao()
+        {
+            using (var contexto = new LojaContext())
+            {
+                var promocao = new Promocao();
+                promocao.Descricao = "Queima Total Janeiro 2017";
+                promocao.DataInicio = new DateTime(2017, 1, 1);
+                promocao.DataTermino = new DateTime(2017, 1, 31);
+
+                var produtos = contexto
+                    .Produtos
+                    .Where(p => p.Categoria == "Bebidas")
+                    .ToList();
+
+                foreach (var item in produtos)
+                {
+                    promocao.IncluiProduto(item);
+                }
+
+                contexto.Promocoes.Add(promocao);
+            }
+        }
+
+        private static void umParaUm() {
+            var fulano = new Cliente();
+            fulano.Nome = "Fulaninho de Tal";
+            fulano.EnderecoDeEntrega = new Endereco()
+            {
+                Numero = 12,
+                Logradouro = "Rua dos Inválidos",
+                Complemento = "sobrado",
+                Bairro = "Centro",
+                Cidade = "Cidade"
+            };
+        }
+        private static void muitosParaMuitos() {
             var p1 = new Produto() { Nome = "Suco de Laranja", Categoria = "Bebidas", PrecoUnitario = 8.79, Unidade = "Litros" };
             var p2 = new Produto() { Nome = "Café", Categoria = "Bebidas", PrecoUnitario = 12.45, Unidade = "Gramas" };
             var p3 = new Produto() { Nome = "Macarrão", Categoria = "Alimentos", PrecoUnitario = 4.23, Unidade = "Gramas" };
