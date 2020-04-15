@@ -1,4 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,15 +14,49 @@ namespace Alura.Loja.Testes.ConsoleApp
     {
         static void Main(string[] args)
         {
-            incluirPromocao();
+            using (var contexto = new LojaContext())
+            {
+                var cliente = contexto
+                    .Clientes
+                    .Include(c => c.EnderecoDeEntrega)
+                    .FirstOrDefault();
+
+                Console.WriteLine($"Endereço de entrega: {cliente.EnderecoDeEntrega.Logradouro}");
+
+
+                var produto = contexto
+                    .Produtos
+                    .Include(p => p.Compras)
+                    .Where(p => p.Id == 1)
+                    .FirstOrDefault();
+
+                contexto.Entry(produto)
+                    .Collection(p => p.Compras)
+                    .Query()
+                    .Where(c => c.Preco > 10)
+                    .Load();
+
+                Console.WriteLine($"Mostrando as compras do produto {produto.Nome}");
+                foreach (var item in produto.Compras)
+                {
+                    Console.WriteLine(item);
+                }
+            }
+
+
+            Console.ReadKey();
+
+        }
+
+        private static void ExibeProdutosDaPromocao() {
 
             using (var contexto2 = new LojaContext())
             {
                 var promocao = contexto2
-               .Promocoes
-               .Include(p => p.Produtos)
-               .ThenInclude(pp => pp.Produto)
-               .FirstOrDefault();
+                .Promocoes
+                .Include(p => p.Produtos)
+                .ThenInclude(pp => pp.Produto)
+                .FirstOrDefault();
 
                 Console.WriteLine("\nMotrando os produtos da promoção...");
                 foreach (var item in promocao.Produtos)
@@ -28,9 +65,9 @@ namespace Alura.Loja.Testes.ConsoleApp
                 }
             }
 
-            Console.ReadKey();
-
         }
+
+
 
         private static void incluirPromocao()
         {
@@ -52,6 +89,7 @@ namespace Alura.Loja.Testes.ConsoleApp
                 }
 
                 contexto.Promocoes.Add(promocao);
+                contexto.SaveChanges();
             }
         }
 
